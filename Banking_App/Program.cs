@@ -1,4 +1,6 @@
 ﻿
+using Banking_App.Banners;
+using System;
 using System.Threading.Channels;
 
 var accounts = new List<Account>
@@ -19,12 +21,12 @@ if (current == null)
 {
     Console.WriteLine("Account not found.");
     Console.WriteLine("Creating one for you...");
-    accounts.Add(new Account { Name = userNameLower, Balance = 1000m });
+    current = new Account { Name = userNameLower, Balance = 1000m };
+    accounts.Add(current);
     Console.WriteLine($"Account created for {userNameLower}.");
-    return;
 }
 
-Console.WriteLine(" what is your branch");
+Console.WriteLine("What is the name of your branch City");
 string branch = Console.ReadLine();
 
 bool running  = true;
@@ -34,9 +36,11 @@ while (running)
 {
     //Console.WriteLine("Welcome to TatumBank, whats your name");
     //string name = Console.ReadLine();
+    Banner.Display($" Welcome to TatumBank {branch} branch {userName}");
+
     
-    Console.WriteLine("Welcome to tatumbank " + branch + " branch, " + userName);
-    Console.WriteLine("\n1.Check balance\n2. Transfer\n3. Airtime\n.4 Exit");
+    Console.WriteLine($"Welcome to tatumbank {branch} branch, {userName}");
+    Console.WriteLine("\n1.Check balance\n2. Transfer\n3. Airtime\n4. Exit");
     string choice = Console.ReadLine();
 
     switch(choice)
@@ -55,7 +59,12 @@ while (running)
                 break;
             }
             Console.WriteLine("Enter amount to transfer:");
-            decimal amount = Convert.ToDecimal(Console.ReadLine());
+            if(transferNumber == current)
+            {
+                Console.WriteLine("You cant transfer Money to yourself.");
+                break;
+            }
+            decimal amount = decimal.Parse(Console.ReadLine());
             if(amount <= 0)
             {
                 Console.WriteLine("Invalid amount. Please enter a positive value.");
@@ -79,7 +88,7 @@ while (running)
             Console.WriteLine("Enter the phone number:");
             string phoneNumber =  Console.ReadLine();
             Console.WriteLine("Enter the amount:");
-            decimal AirtimeAmount = Convert.ToDecimal(Console.ReadLine());
+            decimal AirtimeAmount = decimal.Parse(Console.ReadLine());
             if (AirtimeAmount <= 0)
             {
                 Console.WriteLine("Invalid amount. Please enter a positive value.");
@@ -93,7 +102,7 @@ while (running)
             {
                 current.Balance -= AirtimeAmount;
                 Console.WriteLine("Purchasing Airtime.......");
-                Console.WriteLine("Airtime Purchase successful. New balance: " + current.Balance);
+                Console.WriteLine($"Airtime Purchase successful for {phoneNumber}. New balance: " + current.Balance);
             }
             break ;
 
